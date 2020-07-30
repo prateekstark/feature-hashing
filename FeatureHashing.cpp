@@ -21,8 +21,8 @@ void FeatureHashing(float* bigArray, float* smallArray, int bigDimension, int sm
 	for(int i=0;i<smallDimension;i++){
 	}
 	for(int i=0;i<bigDimension;i++){
-		int hashValue = hash1(i);
-		smallArray[hashValue % smallDimension] += E(i) * bigArray[i];
+		int hashValue = hash2(i);
+		smallArray[hashValue % smallDimension >=0 ? hashValue % smallDimension : (hashValue % smallDimension) + smallDimension] += E(i) * bigArray[i];
 	}
 }
 
@@ -46,12 +46,18 @@ int main(){
 	norm1 = sqrt(computeDotProduct(bigArray1, bigArray1, bigDimension));
 	norm2 = sqrt(computeDotProduct(bigArray2, bigArray2, bigDimension));
 
-	int smallDimension = 15552/2;
+	int smallDimension = 300;
 	float smallArray1[smallDimension], smallArray2[smallDimension];
 	FeatureHashing(bigArray1, smallArray1, bigDimension, smallDimension);
 	FeatureHashing(bigArray2, smallArray2, bigDimension, smallDimension);
 
-	cout << computeDotProduct(bigArray1, bigArray2, bigDimension) * 2 << " " << computeDotProduct(smallArray1, smallArray2, smallDimension) << endl;
+	norm1 = sqrt(computeDotProduct(smallArray1, smallArray1, smallDimension));
+	norm2 = sqrt(computeDotProduct(smallArray2, smallArray2, smallDimension));
+
+	normalizeArray(smallArray1, smallDimension, norm1);
+	normalizeArray(smallArray2, smallDimension, norm2);
+
+	cout << computeDotProduct(bigArray1, bigArray2, bigDimension) << " " << computeDotProduct(smallArray1, smallArray2, smallDimension) << endl;
 
 	return 0;
 }
